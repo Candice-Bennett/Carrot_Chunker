@@ -4,16 +4,16 @@
   "top_cutoff_rank": null,
   "use_chapters": false,
   "start_percent": 0,
-  "end_percent": 0.3,
+  "end_percent": 0,
   "dedupe_enabled": false,
   "dedupe_fields": [
     {
-      "note_type": "Basic - New HSK (2025) - meaning",
-      "field_name": "Simplified"
+      "note_type": "Note name 1",
+      "field_name": "Hanzi"
     },
     {
-      "note_type": "Lapis copy",
-      "field_name": "Expression"
+      "note_type": "Note name 2",
+      "field_name": "Simplified"
     }
   ],
   "input_path": "",
