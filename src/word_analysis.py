@@ -5,6 +5,7 @@ from collections import Counter
 
 import hanlp
 
+from console import fatal
 from models import WordCandidate
 from progress import tqdm
 
@@ -27,7 +28,14 @@ class WordAnalysisService:
         self.example_min_hanzi = example_min_hanzi
         self.example_max_hanzi = example_max_hanzi
         self.segment_batch_size = segment_batch_size
-        self.tokenizer = hanlp.load(hanlp.pretrained.tok.COARSE_ELECTRA_SMALL_ZH)
+        try:
+            self.tokenizer = hanlp.load(hanlp.pretrained.tok.COARSE_ELECTRA_SMALL_ZH)
+        except Exception as e:
+            fatal(
+                f"Couldn't load the HanLP tokenizer ({e})\n"
+                "  - This downloads a model on first run, so make sure you're online\n"
+                "  - After a successful run it's cached in ~/.hanlp and no longer needs the internet"
+            )
         if self.chengyu:
             self.tokenizer.dict_force = self.chengyu
 

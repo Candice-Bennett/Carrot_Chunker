@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import Protocol
 
 from archives import find_zips, read_banks
+from console import warn
 from progress import tqdm
 
 from models import WordCandidate
@@ -50,7 +51,14 @@ def load_freq_dicts(folder: str) -> FreqSource | None:
     paths = find_zips(folder)
     if not paths:
         return None
-    dicts = [YomitanFreqDict(str(p)) for p in paths]
+    dicts = []
+    for p in paths:
+        try:
+            dicts.append(YomitanFreqDict(str(p)))
+        except Exception as e:
+            warn(f"Frequency dictionaries: couldn't read {p.name!r} ({e}), skipping it")
+    if not dicts:
+        return None
     return dicts[0] if len(dicts) == 1 else FreqChain(dicts)
 
 

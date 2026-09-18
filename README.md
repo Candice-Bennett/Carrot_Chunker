@@ -6,18 +6,39 @@ filter words down to reduce card count, looks the remaining words up in a
 dictionary, and writes the result to a CSV. The entry point is
 [main.py](main.py), and the pipeline steps live under [src](src).
 
+## Card fields
+
 Cards will include:
 - Hanzi,
-- Pinyin,
-- Definition,
+- Pinyin (based of the most frequent reading in your dict, will not be 100% accurate),
+- Definition (from your dictionary),
 - Count (# of occurances in the text),
 - Rank (When all words in the text ordered by frequency),
 - Dict Rank (Frequency from frequency dictionary),
 - Example Sentence (First occurance of words in text with word bolded)
 
-## Running it
 
-You will need python to be installed.
+## Prerequisites
+
+- **Python** - get it from [python.org/downloads](https://www.python.org/downloads/). On Windows,
+  tick "Add python.exe to PATH" during install, then confirm it worked with `python --version`
+  in a new terminal.
+- **AnkiConnect** (only needed for `dedupe_enabled`) - in Anki go to Tools > Add-ons > Get Add-ons,
+  paste in code `2055492159`, and restart Anki. More info at
+  [ankiweb.net/shared/info/2055492159](https://ankiweb.net/shared/info/2055492159).
+- **Dictionaries** [dictionaries](dictionaries) is empty by default- a good source of Yomitan-format Chinese term and frequency dictionaries is
+  [MarvNC/yomitan-dictionaries](https://github.com/MarvNC/yomitan-dictionaries). Drop the `.zip` files
+  straight into [dictionaries](dictionaries) / [frequency_dictionaries](frequency_dictionaries).
+
+## Downloading Carrot Chunker
+
+Click the green "Code" button near the top of this page, then "Download ZIP",
+and extract it somewhere.
+
+You'll then need a terminal open *in that folder* to run the commands below. On Windows,
+open the extracted folder in File Explorer, click the address bar, type `cmd`, and hit Enter.
+
+## Running Carrot Chunker
 
 Drop in your dictionaries, frequency dictionaries and text (as a .txt or as a .epub) to the relevant folders
 ([dictionaries](dictionaries), [frequency_dictionaries](frequency_dictionaries)
@@ -54,6 +75,18 @@ Set your frequency cut offs in [config.json](config.json). Here's what they do:
   Hanzi field set to 我, if the chunker finds 我 in in the text and it is not removed from the above filters
   *this* will remove it so you don't have duplicate anki cards.
 
+- `start_percent` / `end_percent` = only use the middle chunk of the text, by character count
+
+  i.e if `start_percent = 0.1` and `end_percent = 0.4` only the text from 10% in to 40% in
+  is used. Handy for cutting a huge text down before segmenting it. Ignored if `use_chapters` is on.
+
+- `use_chapters` = pick specific chapters instead of a percent range
+
+  Looks for `第...章`/`节`/`回` headings, tells you how many chapters it found, then asks
+  which ones you want. You can answer with a single chapter (`5`), a range (`10-100`), a
+  list (`4,5,6,9,10`), or mix them (`1-3,5,9-10`). If no headings are found it falls back
+  to using the whole text.
+
 Then install the dependencies from [requirements.txt](requirements.txt) and run it, passing
 the filename to chunk (it's read from the [data](data) folder):
 ```
@@ -71,12 +104,26 @@ NOTE:
 First run downloads the HanLP model (network required, cached after in
 `~/.hanlp`).
 
+## Importing into Anki
+
+The chunker writes a CSV (default [output/deck.csv](output/deck.csv)), not Anki cards directly -
+you still need to import it:
+
+1. In Anki, go to File > Import, and pick the CSV.
+2. Check that the [field mapping](#card-fields) lines up (Hanzi, Pinyin, Definition, Count, Rank, Dict Rank,
+   Example - skip any column your note type doesn't have).
+3. Tick **"Allow HTML in fields"** - the example sentence wraps the target word in `<b>` tags,
+   and without this ticked you'll see the literal `<b>` text instead of bold text.
+4. Pick the deck and note type you want the cards added to, then import.
+
 ## Config ([config.json](config.json))
 
 | Flag | What it does |
 |---|---|
 | `min_count` / `percentile_cutoff` | bottom frequency cutoff |
 | `top_cutoff_rank` | top frequency cutoff, needs a frequency dictionary |
+| `start_percent` / `end_percent` | only use this % range of the text (by character count) |
+| `use_chapters` | pick specific chapters instead, prompts you at run time |
 | `dedupe_enabled` / `dedupe_fields` | `{note_type, field_name}` pairs to check via AnkiConnect |
 | `input_path` | `.txt` or `.epub` to read - `""` uses the command-line filename from [data](data) instead |
 | `output_path` | where the CSV is written - `""` uses [output/deck.csv](output/deck.csv) |

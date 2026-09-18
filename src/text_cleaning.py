@@ -45,6 +45,6 @@ def strip_author_notes(text: str) -> str:
         rest = text[match.end():]
         next_divider = DIVIDER.search(rest)
         if next_divider:
-            text = text[: match.start()] + rest[next_divider.end():]
+            text = text[: match.start()] + rest[next_divider.start():]
         else:
             text = text[: match.start()]

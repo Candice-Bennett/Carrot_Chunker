@@ -4,6 +4,8 @@ import json
 from dataclasses import dataclass, field
 from pathlib import Path
 
+from console import warn
+
 
 @dataclass
 class DedupeField:
@@ -15,6 +17,9 @@ class Config:
     min_count: int = 2
     percentile_cutoff: float = 0.0
     top_cutoff_rank: int | None = None
+    use_chapters: bool = False
+    start_percent: float = 0.0
+    end_percent: float = 1.0
     dedupe_enabled: bool = True
     dedupe_fields: list[DedupeField] = field(default_factory=list)
 
@@ -33,8 +38,14 @@ class Config:
 
     @classmethod
     def load(cls, path: str | Path) -> "Config":
-        raw = json.loads(Path(path).read_text(encoding="utf-8"))
-        raw = {k: v for k, v in raw.items() if v != ""}
-        raw_fields = raw.pop("dedupe_fields", [])
-        dedupe_fields = [DedupeField(**d) for d in raw_fields]
-        return cls(dedupe_fields=dedupe_fields, **raw)
+        try:
+            raw = json.loads(Path(path).read_text(encoding="utf-8"))
+            raw = {k: v for k, v in raw.items() if v != ""}
+            raw_fields = raw.pop("dedupe_fields", [])
+            dedupe_fields = [DedupeField(**d) for d in raw_fields]
+            return cls(dedupe_fields=dedupe_fields, **raw)
+        except FileNotFoundError:
+            warn(f"Config: couldn't find {str(path)!r}, using default settings")
+        except (json.JSONDecodeError, TypeError) as e:
+            warn(f"Config: {str(path)!r} is malformed ({e}), using default settings")
+        return cls()

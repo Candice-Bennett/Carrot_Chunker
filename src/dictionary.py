@@ -6,7 +6,7 @@ from pathlib import Path
 from typing import Iterator, Protocol
 
 from archives import find_zips, read_banks, read_texts, zip_names
-
+from console import warn
 from progress import tqdm
 
 LINE = re.compile(r"^(\S+)\s+(\S+)\s+\[([^\]]*)\]\s+/(.+)/\s*$")
@@ -116,7 +116,14 @@ def load_dicts(folder: str) -> DictionarySource | None:
     paths = find_zips(folder)
     if not paths:
         return None
-    sources = [load_dictionary(str(p)) for p in paths]
+    sources = []
+    for p in paths:
+        try:
+            sources.append(load_dictionary(str(p)))
+        except Exception as e:
+            warn(f"Dictionaries: couldn't read {p.name!r} ({e}), skipping it")
+    if not sources:
+        return None
     return sources[0] if len(sources) == 1 else DictionaryChain(sources)
 
 

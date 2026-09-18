@@ -7,21 +7,39 @@ sys.path.insert(0, str(Path(__file__).resolve().parent / "src"))
 
 from anki_service import CsvBuilder, DedupeChecker
 from ankiconnect_client import AnkiConnectClient
+from archives import find_zips
 from config import Config
+from console import fatal, warn
 from dictionary import DictionaryService, derive_chengyu, load_dicts
 from frequency import FrequencyService, load_freq_dicts
 from ingest import load_text
+from sectioning import pick_chapters, slice_percent
 from text_cleaning import clean_text
 from word_analysis import WordAnalysisService
 
 
+def check_user_zips(folder: str, label: str) -> None:
+    zips = find_zips(folder)
+    user_zips = [p for p in zips if not p.name.upper().startswith("ZZ")]
+    if user_zips:
+        return
+    if zips:
+        warn(f"{label}: no user dictionaries found in {folder!r}, only the bundled ZZ fallback ones are being used")
+    else:
+        warn(f"{label}: no dictionaries found in {folder!r} at all, so this step will be skipped entirely")
+
+
 def build_freq_service(cfg: Config) -> FrequencyService:
+    check_user_zips(cfg.frequency_dictionaries_dir, "Frequency dictionaries")
     freq_dict = load_freq_dicts(cfg.frequency_dictionaries_dir)
     return FrequencyService(freq_dict, cfg.top_cutoff_rank, cfg.keep_unranked_words)
 
 
 def build_dict_service(cfg: Config) -> DictionaryService:
+    check_user_zips(cfg.dictionaries_dir, "Dictionaries")
     source = load_dicts(cfg.dictionaries_dir)
+    if source is None:
+        warn("Dictionaries: no dictionary could be loaded, cards will have no definitions")
     return DictionaryService(source)
 
 
@@ -29,14 +47,23 @@ def main(input_name: str | None = None) -> None:
     cfg = Config.load("config.json")
     input_path = cfg.input_path or (Path("data") / input_name if input_name else None)
     if not input_path:
-        print("Usage: python main.py <filename in data/> (or set input_path in config.json)")
-        sys.exit(1)
+        fatal("Usage: python main.py <filename in data/> (or set input_path in config.json)")
 
-    text = load_text(str(input_path))
+    try:
+        text = load_text(str(input_path))
+    except FileNotFoundError:
+        fatal(f"Couldn't find input file {str(input_path)!r}, check the filename (or input_path in config.json)")
     if cfg.clean_text:
         before = len(text)
         text = clean_text(text)
         print(f"Cleaned text: {before} chars, now {len(text)} chars")
+
+    if cfg.use_chapters:
+        text = pick_chapters(text)
+        print(f"Chapters: using {len(text)} chars")
+    elif cfg.start_percent > 0 or cfg.end_percent < 1:
+        text = slice_percent(text, cfg.start_percent, cfg.end_percent)
+        print(f"Section: {cfg.start_percent:.0%}-{cfg.end_percent:.0%}, {len(text)} chars")
 
     dict_service = build_dict_service(cfg)
     chengyu = derive_chengyu(dict_service.source)
