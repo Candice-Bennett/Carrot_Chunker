@@ -1,0 +1,29 @@
+{
+  "min_count": 15,
+  "percentile_cutoff": 0.35,
+  "top_cutoff_rank": null,
+  "dedupe_enabled": true,
+  "dedupe_fields": [
+    {
+      "note_type": "Basic - New HSK (2025) - meaning",
+      "field_name": "Simplified"
+    },
+    {
+      "note_type": "Lapis copy",
+      "field_name": "Expression"
+    }
+  ],
+
+  "input_path": "",
+  "output_path": "",
+  "dictionaries_dir": "",
+  "frequency_dictionaries_dir": "",
+
+  "segment_batch_size": 64,
+  "clean_text": true,
+  "keep_unranked_words": true,
+  "debug": false,
+  "example_sentence_min_hanzi": 6,
+  "example_sentence_max_hanzi": 25,
+  "ankiconnect_url": "http://127.0.0.1:8765"
+}

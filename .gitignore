@@ -1,0 +1,13 @@
+.venv/
+venv/
+dictionaries/*
+!dictionaries/.gitkeep
+data/*
+!data/.gitkeep
+output/*
+!output/.gitkeep
+frequency_dictionaries/*
+!frequency_dictionaries/ZZ_Fallback_1.zip
+!frequency_dictionaries/ZZ_Fallback_2.zip
+.vscode/
+test_config.json
