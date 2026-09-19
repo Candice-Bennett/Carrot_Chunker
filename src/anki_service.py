@@ -24,9 +24,10 @@ def example_field(c: WordCandidate) -> str:
 
 
 class CsvBuilder:
-    def __init__(self, output_path: str, has_dict_rank: bool = False):
+    def __init__(self, output_path: str, has_dict_rank: bool = False, cc_cedict_defs_new_line: bool = False):
         self.output_path = output_path
         self.has_dict_rank = has_dict_rank
+        self.cc_cedict_defs_new_line = cc_cedict_defs_new_line
 
     def add(self, candidates: list[WordCandidate]) -> None:
         Path(self.output_path).parent.mkdir(parents=True, exist_ok=True)
@@ -39,10 +40,13 @@ class CsvBuilder:
             writer = csv.writer(f)
             writer.writerow(header)
             for c in candidates:
+                definition = "; ".join(c.definitions)
+                if self.cc_cedict_defs_new_line:
+                    definition = definition.replace("; ", ";\n")
                 row = [
                     c.text,
                     c.reading or "",
-                    "; ".join(c.definitions),
+                    definition,
                     c.count,
                     "" if c.text_rank is None else c.text_rank,
                 ]

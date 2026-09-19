@@ -91,7 +91,7 @@ Then install the dependencies from [requirements.txt](requirements.txt) and run 
 the filename to chunk (it's read from the [data](data) folder):
 ```
 pip install -r requirements.txt
-python main.py [name of your text]
+python main.py [name of your file including extension (.txt/.epub)]
 ```
 or, if you've set `input_path` in [config.json](config.json) so it already knows which file
 to use:
@@ -118,30 +118,49 @@ you still need to import it:
 
 ## Config ([config.json](config.json))
 
-### NOTE: All paths in this config, if you are on Windows will need to have all slashes escaped, what that means is if your path is `"C:\Users\Me\Downloads\[西子绪]死亡万花筒.txt"` then you need to put `"C:\\Users\\Me\\Downloads\\[西子绪]死亡万花筒.txt"` in the `config.json`
+### Filtering
 
 | Flag | What it does |
 |---|---|
 | `min_count` / `percentile_cutoff` | bottom frequency cutoff |
 | `top_cutoff_rank` | top frequency cutoff, needs a frequency dictionary |
-| `start_percent` / `end_percent` | only use this % range of the text (by character count) |
 | `use_chapters` | pick specific chapters instead, prompts you at run time |
+| `start_percent` / `end_percent` | only use this % range of the text (by character count) |
 | `dedupe_enabled` / `dedupe_fields` | `{note_type, field_name}` pairs to check via AnkiConnect |
+
+### Paths
+
+#### NOTE: All paths in this config, if you are on Windows will need to have all slashes escaped, what that means is if your path is `"C:\Users\Me\Downloads\[西子绪]死亡万花筒.txt"` then you need to put `"C:\\Users\\Me\\Downloads\\[西子绪]死亡万花筒.txt"` in the `config.json`
+
+| Flag | What it does |
+|---|---|
 | `input_path` | `.txt` or `.epub` to read - `""` uses the command-line filename from [data](data) instead |
 | `output_path` | where the CSV is written - `""` uses [output/deck.csv](output/deck.csv) |
 | `dictionaries_dir` | definition dictionaries folder - `""` uses [dictionaries](dictionaries) |
 | `frequency_dictionaries_dir` | frequency dictionaries folder - `""` uses [frequency_dictionaries](frequency_dictionaries) |
-| `segment_batch_size` | sentences per HanLP call |
-| `clean_text` | strip downloader noise (default `true`) |
-| `keep_unranked_words` | keep words missing from every frequency dictionary |
-| `debug` | keep cards with no definition found |
-| `example_sentence_min_hanzi` / `example_sentence_max_hanzi` | example sentence length range |
-| `ankiconnect_url` | default `http://127.0.0.1:8765` |
 
 `input_path`, `output_path`, `dictionaries_dir`, and
 `frequency_dictionaries_dir` are overrides - leave them as `""` to use
 the default shown above, or set a path (relative or absolute) to point
 elsewhere.
+
+### Card settings
+
+| Flag | What it does |
+|---|---|
+| `stack_dict_definitions` | look a word up in every dictionary instead of stopping at the first match, putting each dictionary's definitions on their own line |
+| `cc_cedict_defs_new_line` | puts each `;`-separated definition on its own line in the CSV |
+| `example_sentence_min_hanzi` / `example_sentence_max_hanzi` | example sentence length range |
+
+### Debug
+
+| Flag | What it does |
+|---|---|
+| `show_words_with_no_defs` | keep cards with no definition found  |
+| `segment_batch_size` | sentences per HanLP call |
+| `clean_text` | strip downloader noise (default `true`) |
+| `keep_unranked_words` | keep words missing from every frequency dictionary |
+| `ankiconnect_url` | default `http://127.0.0.1:8765` |
 
 ## Notes
 

@@ -14,6 +14,7 @@ class DedupeField:
 
 @dataclass
 class Config:
+    # Filtering
     min_count: int = 2
     percentile_cutoff: float = 0.0
     top_cutoff_rank: int | None = None
@@ -23,17 +24,23 @@ class Config:
     dedupe_enabled: bool = True
     dedupe_fields: list[DedupeField] = field(default_factory=list)
 
+    # Paths
     input_path: str = ""
     output_path: str = "output/deck.csv"
     dictionaries_dir: str = "dictionaries"
     frequency_dictionaries_dir: str = "frequency_dictionaries"
 
+    # Card settings
+    stack_dict_definitions: bool = False
+    cc_cedict_defs_new_line: bool = False
+    example_sentence_min_hanzi: int = 6
+    example_sentence_max_hanzi: int = 25
+
+    # Debug
+    show_words_with_no_defs: bool = False
     segment_batch_size: int = 32
     clean_text: bool = True
     keep_unranked_words: bool = True
-    debug: bool = False
-    example_sentence_min_hanzi: int = 6
-    example_sentence_max_hanzi: int = 25
     ankiconnect_url: str = "http://127.0.0.1:8765"
 
     @classmethod

@@ -107,6 +107,14 @@ class DictionaryChain:
                 return reading, definitions
         return None, []
 
+    def lookup_each(self, word: str) -> list[tuple[str | None, list[str]]]:
+        results = []
+        for source in self.sources:
+            reading, definitions = source.lookup(word)
+            if reading is not None or definitions:
+                results.append((reading, definitions))
+        return results
+
     def iter_entries(self) -> Iterator[tuple[str, list[str]]]:
         for source in self.sources:
             yield from source.iter_entries()
@@ -194,14 +202,22 @@ def flatten_definition(item) -> list[str]:
 
 
 class DictionaryService:
-    def __init__(self, source: DictionarySource | None):
+    def __init__(self, source: DictionarySource | None, stack_definitions: bool = False):
         self.source = source
+        self.stack_definitions = stack_definitions
 
     def annotate(self, candidates) -> None:
         if self.source is None:
             return
+        stacking = self.stack_definitions and isinstance(self.source, DictionaryChain)
         for c in tqdm(candidates, desc="dictionary lookup", unit="word"):
-            c.reading, c.definitions = self.source.lookup(c.text)
+            if stacking:
+                results = self.source.lookup_each(c.text)
+                c.reading = next((r for r, _ in results if r is not None), None)
+                blocks = ["; ".join(defs) for _, defs in results if defs]
+                c.definitions = ["\n".join(blocks)] if blocks else []
+            else:
+                c.reading, c.definitions = self.source.lookup(c.text)
 
 
 IDIOM_MARKER = re.compile(r"\bidiom\b", re.IGNORECASE)

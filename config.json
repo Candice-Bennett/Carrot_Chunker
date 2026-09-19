@@ -23,8 +23,10 @@
   "segment_batch_size": 64,
   "clean_text": true,
   "keep_unranked_words": true,
-  "debug": false,
+  "ankiconnect_url": "http://127.0.0.1:8765",
+  "stack_dict_definitions": true,
+  "cc_cedict_defs_new_line": false,
   "example_sentence_min_hanzi": 6,
   "example_sentence_max_hanzi": 25,
-  "ankiconnect_url": "http://127.0.0.1:8765"
+  "show_words_with_no_defs": false
 }
