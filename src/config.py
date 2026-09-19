@@ -32,7 +32,7 @@ class Config:
 
     # Card settings
     stack_dict_definitions: bool = False
-    cc_cedict_defs_new_line: bool = False
+    dict_defs_on_new_line: bool = False
     example_sentence_min_hanzi: int = 6
     example_sentence_max_hanzi: int = 25
 

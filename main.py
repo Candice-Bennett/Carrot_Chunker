@@ -98,7 +98,7 @@ def main(input_name: str | None = None) -> None:
     backend = CsvBuilder(
         cfg.output_path,
         has_dict_rank=freq_service.freq_dict is not None,
-        cc_cedict_defs_new_line=cfg.cc_cedict_defs_new_line,
+        dict_defs_on_new_line=cfg.dict_defs_on_new_line,
     )
     backend.add(candidates)
     print(f"Done: wrote {cfg.output_path!r}")
