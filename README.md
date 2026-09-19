@@ -118,6 +118,8 @@ you still need to import it:
 
 ## Config ([config.json](config.json))
 
+### NOTE: All paths in this config, if you are on Windows will need to have all slashes escaped, what that means is if your path is `"C:\Users\Me\Downloads\[西子绪]死亡万花筒.txt"` then you need to put `"C:\\Users\\Me\\Downloads\\[西子绪]死亡万花筒.txt"` in the `config.json`
+
 | Flag | What it does |
 |---|---|
 | `min_count` / `percentile_cutoff` | bottom frequency cutoff |
@@ -156,3 +158,17 @@ elsewhere.
 - The file cleaning (in [src/text_cleaning.py](src/text_cleaning.py)) is based
   on my copy of 死亡玩花间 which had some noise from jjwxc (such as donation
   thanks) and the Novel Downloader I used. It may not clean perfectly.
+
+## Troubleshooting
+
+- **HanLP's model download fails partway through**, with an error along the
+  lines of `Chunk 1 downloaded size 197 mismatches with expected size ...`
+  HanLP is used to identify the words so is essential. If you run into errors try running carrot chunker again, if it keeps failing after a
+    handful of retries then you can work around it by fetching the file yourself:
+    1. Copy the URL from the `Downloading ...` line above the error.
+    2. Download it in your browser and unzip it.
+    3. Drop the resulting folder into the matching path under `~/.hanlp/`
+       (e.g. `~/.hanlp/tok/coarse_electra_small_20220616_012050/`),
+       overwriting anything already there.
+    4. Re-run the chunker - it'll see the model's already in place and
+       skip downloading it.
