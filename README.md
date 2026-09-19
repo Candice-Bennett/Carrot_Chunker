@@ -64,6 +64,11 @@ Set your frequency cut offs in [config.json](config.json). Here's what they do:
   note: this uses frequency in the *language* i.e your text may only have
   的 once but since 的 is used a lot in the chinese *language* it will be removed
 
+- `set_lowest_freq` = when you have more than one frequency dictionary, use the lowest
+  (most common) rank found for a word.
+
+  i.e if `ZZ_Fallback_1` ranks a word at 4941 but `ZZ_Fallback_2` ranks the same word at 103, turning this on picks 103 even though fallback_1 is first
+
 - `use_chapters` = pick specific chapters instead of a percent range
 
   Looks for `第...章`/`节`/`回` headings, tells you how many chapters it found, then asks
@@ -126,6 +131,7 @@ you still need to import it:
 |---|---|
 | `min_count` / `percentile_cutoff` | bottom frequency cutoff |
 | `top_cutoff_rank` | top frequency cutoff, needs a frequency dictionary |
+| `set_lowest_freq` | with multiple frequency dictionaries, use the lowest (most common) rank found across all of them instead of the first one checked |
 | `use_chapters` | pick specific chapters instead, prompts you at run time |
 | `start_percent` / `end_percent` | only use this % range of the text (by character count) |
 | `dedupe_enabled` / `dedupe_fields` | `{note_type, field_name}` pairs to check via AnkiConnect |

@@ -46,6 +46,14 @@ class FreqChain:
                 return value
         return None
 
+    def lookup_all(self, word: str) -> list[float]:
+        values = []
+        for d in self.dicts:
+            value = d.lookup(word)
+            if value is not None:
+                values.append(value)
+        return values
+
 
 def load_freq_dicts(folder: str) -> FreqSource | None:
     paths = find_zips(folder)
@@ -86,10 +94,18 @@ class FrequencyService:
         freq_dict: FreqSource | None,
         top_cutoff_rank: int | None = None,
         keep_unranked_words: bool = True,
+        set_lowest_freq: bool = False,
     ):
         self.freq_dict = freq_dict
         self.top_cutoff_rank = top_cutoff_rank
         self.keep_unranked_words = keep_unranked_words
+        self.set_lowest_freq = set_lowest_freq
+
+    def _lookup(self, word: str) -> float | None:
+        if self.set_lowest_freq and isinstance(self.freq_dict, FreqChain):
+            values = self.freq_dict.lookup_all(word)
+            return min(values) if values else None
+        return self.freq_dict.lookup(word)
 
     def filter_and_annotate(
         self,
@@ -100,17 +116,17 @@ class FrequencyService:
         survivors = cutoff(candidates, min_count, percentile_cutoff)
 
         if self.freq_dict is not None and not self.keep_unranked_words:
-            survivors = [c for c in survivors if self.freq_dict.lookup(c.text) is not None]
+            survivors = [c for c in survivors if self._lookup(c.text) is not None]
 
         if self.top_cutoff_rank is not None and self.freq_dict is not None:
             def too_common(c: WordCandidate) -> bool:
-                rank = self.freq_dict.lookup(c.text)
+                rank = self._lookup(c.text)
                 return rank is not None and rank <= self.top_cutoff_rank
 
             survivors = [c for c in survivors if not too_common(c)]
 
         if self.freq_dict is not None:
             for c in tqdm(survivors, desc="frequency lookup", unit="word"):
-                c.dict_rank = self.freq_dict.lookup(c.text)
+                c.dict_rank = self._lookup(c.text)
 
         return rank_by_count(survivors)

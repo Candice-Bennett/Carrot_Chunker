@@ -18,6 +18,7 @@ class Config:
     min_count: int = 2
     percentile_cutoff: float = 0.0
     top_cutoff_rank: int | None = None
+    set_lowest_freq: bool = False
     use_chapters: bool = False
     start_percent: float = 0.0
     end_percent: float = 1.0

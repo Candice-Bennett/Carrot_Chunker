@@ -32,7 +32,7 @@ def check_user_zips(folder: str, label: str) -> None:
 def build_freq_service(cfg: Config) -> FrequencyService:
     check_user_zips(cfg.frequency_dictionaries_dir, "Frequency dictionaries")
     freq_dict = load_freq_dicts(cfg.frequency_dictionaries_dir)
-    return FrequencyService(freq_dict, cfg.top_cutoff_rank, cfg.keep_unranked_words)
+    return FrequencyService(freq_dict, cfg.top_cutoff_rank, cfg.keep_unranked_words, cfg.set_lowest_freq)
 
 
 def build_dict_service(cfg: Config) -> DictionaryService:
