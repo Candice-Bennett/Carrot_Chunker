@@ -64,6 +64,18 @@ Set your frequency cut offs in [config.json](config.json). Here's what they do:
   note: this uses frequency in the *language* i.e your text may only have
   的 once but since 的 is used a lot in the chinese *language* it will be removed
 
+- `use_chapters` = pick specific chapters instead of a percent range
+
+  Looks for `第...章`/`节`/`回` headings, tells you how many chapters it found, then asks
+  which ones you want. You can answer with a single chapter (`5`), a range (`10-100`), a
+  list (`4,5,6,9,10`), or mix them (`1-3,5,9-10`). If no headings are found it falls back
+  to using the whole text.
+
+- `start_percent` / `end_percent` = only use the middle chunk of the text, by character count
+
+  i.e if `start_percent = 0.1` and `end_percent = 0.4` only the text from 10% in to 40% in
+  is used. Good if you want to learn the beginning of the book first (this will also avoid later words being used and thus less spoilers). Ignored if `use_chapters` is on.
+
 - `dedupe_enabled` = removes all words already present in your Anki collection (requires the
   AnkiConnect addon, since that's how the chunker talks to Anki)
 
@@ -75,17 +87,7 @@ Set your frequency cut offs in [config.json](config.json). Here's what they do:
   Hanzi field set to 我, if the chunker finds 我 in in the text and it is not removed from the above filters
   *this* will remove it so you don't have duplicate anki cards.
 
-- `start_percent` / `end_percent` = only use the middle chunk of the text, by character count
-
-  i.e if `start_percent = 0.1` and `end_percent = 0.4` only the text from 10% in to 40% in
-  is used. Handy for cutting a huge text down before segmenting it. Ignored if `use_chapters` is on.
-
-- `use_chapters` = pick specific chapters instead of a percent range
-
-  Looks for `第...章`/`节`/`回` headings, tells you how many chapters it found, then asks
-  which ones you want. You can answer with a single chapter (`5`), a range (`10-100`), a
-  list (`4,5,6,9,10`), or mix them (`1-3,5,9-10`). If no headings are found it falls back
-  to using the whole text.
+then set your card set up, each setting explained in [Card settings](#card-settings)
 
 Then install the dependencies from [requirements.txt](requirements.txt) and run it, passing
 the filename to chunk (it's read from the [data](data) folder):
