@@ -150,7 +150,7 @@ elsewhere.
 
 | Flag | What it does |
 |---|---|
-| `stack_dict_definitions` | look a word up in every dictionary instead of stopping at the first match, putting each dictionary's definitions on their own line |
+| `stack_dict_definitions` | look a word up in every dictionary instead of stopping at the first match. |
 | `dict_defs_on_new_line` | puts each definition on its own line |
 | `example_sentence_min_hanzi` / `example_sentence_max_hanzi` | example sentence length range |
 
