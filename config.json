@@ -3,8 +3,8 @@
   "percentile_cutoff": 0.0,
   "top_cutoff_rank": null,
   "use_chapters": false,
-  "start_percent": 0,
-  "end_percent": 1,
+  "start_percent": 0.0,
+  "end_percent": 1.0,
   "dedupe_enabled": false,
   "dedupe_fields": [
     {
@@ -22,14 +22,14 @@
   "dictionaries_dir": "",
   "frequency_dictionaries_dir": "",
 
-  "stack_dict_definitions": true,
-  "dict_defs_on_new_line": true,
+  "stack_dict_definitions": false,
+  "dict_defs_on_new_line": false,
   "example_sentence_min_hanzi": 6,
   "example_sentence_max_hanzi": 25,
 
   "show_words_with_no_defs": false,
   "segment_batch_size": 64,
   "clean_text": true,
-  "keep_unranked_words": true,
+  "keep_unranked_words": false,
   "ankiconnect_url": "http://127.0.0.1:8765"
 }
