@@ -28,6 +28,7 @@ class WordAnalysisService:
         self.example_min_hanzi = example_min_hanzi
         self.example_max_hanzi = example_max_hanzi
         self.segment_batch_size = segment_batch_size
+        print("Loading HanLP tokenizer (first run downloads the model, this can take a minute)...")
         try:
             self.tokenizer = hanlp.load(hanlp.pretrained.tok.COARSE_ELECTRA_SMALL_ZH)
         except Exception as e:
