@@ -7,6 +7,7 @@ from typing import Iterator, Protocol
 
 from archives import find_zips, read_banks, read_texts, zip_names
 from console import warn
+from pinyin_spacing import space_pinyin
 from progress import tqdm
 
 LINE = re.compile(r"^(\S+)\s+(\S+)\s+\[([^\]]*)\]\s+/(.+)/\s*$")
@@ -218,6 +219,8 @@ class DictionaryService:
                 c.definitions = ["\n".join(blocks)] if blocks else []
             else:
                 c.reading, c.definitions = self.source.lookup(c.text)
+            if c.reading:
+                c.reading = space_pinyin(c.text, c.reading)
 
 
 IDIOM_MARKER = re.compile(r"\bidiom\b", re.IGNORECASE)

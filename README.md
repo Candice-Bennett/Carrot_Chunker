@@ -111,6 +111,26 @@ NOTE:
 First run downloads the HanLP model (network required, cached after in
 `~/.hanlp`).
 
+## Rabbit-Hole exports
+
+If you point Carrot Chunker at a file exported by
+[Rabbit-Hole](https://github.com/Candice-Bennett/Rabbit-Hole), it's recognised automatically by the
+`# rabbit-hole export` marker on the first line and handled differently:
+
+- Cleaning, segmentation, chapter picking and section slicing are all
+  skipped - the file is already a deduplicated list of words, counts, and
+  example sentences.
+- You're still asked whether to apply frequency filters (`min_count`,
+  `percentile_cutoff`, `top_cutoff_rank`, `set_lowest_freq`).
+- Dedupe against Anki is skipped, since Rabbit-Hole already excluded words
+  you know.
+- From there it's the same as normal: dictionary lookup, then the CSV is
+  built.
+
+This lets you use Rabbit-Hole to measure how hard a text is and see what
+vocab you're missing, then hand the missing words straight to Carrot Chunker
+to turn into cards.
+
 ## Importing into Anki
 
 The chunker writes a CSV (default [output/deck.csv](output/deck.csv)), not Anki cards directly -
