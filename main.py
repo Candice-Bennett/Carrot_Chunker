@@ -41,7 +41,7 @@ def build_dict_service(cfg: Config) -> DictionaryService:
     source = load_dicts(cfg.dictionaries_dir)
     if source is None:
         warn("Dictionaries: no dictionary could be loaded, cards will have no definitions")
-    return DictionaryService(source, cfg.stack_dict_definitions)
+    return DictionaryService(source, cfg.stack_dict_definitions, cfg.space_pinyin)
 
 
 def ask_apply_frequency_filters() -> bool:
@@ -125,13 +125,13 @@ def main(input_name: str | None = None) -> None:
 
     dict_service.annotate(candidates)
 
-    if not cfg.show_words_with_no_defs:
+    if not cfg.keep_words_with_no_defs:
         before = len(candidates)
         candidates = [c for c in candidates if c.definitions]
         dropped = before - len(candidates)
         print(f"Dictionary filter: dropped {dropped} with no definition, {len(candidates)} candidates remain")
         if dropped:
-            print("(set show_words_with_no_defs=true in config.json to keep these instead)")
+            print("(set keep_words_with_no_defs=true in config.json to keep these instead)")
 
     backend = CsvBuilder(
         cfg.output_path,

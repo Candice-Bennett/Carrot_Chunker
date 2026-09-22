@@ -35,11 +35,12 @@ class Config:
     # Card settings
     stack_dict_definitions: bool = False
     dict_defs_on_new_line: bool = False
+    space_pinyin: bool = True
     example_sentence_min_hanzi: int = 6
     example_sentence_max_hanzi: int = 25
 
     # Debug
-    show_words_with_no_defs: bool = False
+    keep_words_with_no_defs: bool = False
     segment_batch_size: int = 32
     clean_text: bool = True
     keep_unranked_words: bool = True

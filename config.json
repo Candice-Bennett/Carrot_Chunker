@@ -25,10 +25,11 @@
 
   "stack_dict_definitions": false,
   "dict_defs_on_new_line": false,
+  "space_pinyin": true,
   "example_sentence_min_hanzi": 6,
   "example_sentence_max_hanzi": 25,
 
-  "show_words_with_no_defs": false,
+  "keep_words_with_no_defs": false,
   "segment_batch_size": 64,
   "clean_text": true,
   "keep_unranked_words": false,

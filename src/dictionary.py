@@ -203,9 +203,10 @@ def flatten_definition(item) -> list[str]:
 
 
 class DictionaryService:
-    def __init__(self, source: DictionarySource | None, stack_definitions: bool = False):
+    def __init__(self, source: DictionarySource | None, stack_definitions: bool = False, space_pinyin: bool = True):
         self.source = source
         self.stack_definitions = stack_definitions
+        self.space_pinyin = space_pinyin
 
     def annotate(self, candidates) -> None:
         if self.source is None:
@@ -219,7 +220,7 @@ class DictionaryService:
                 c.definitions = ["\n".join(blocks)] if blocks else []
             else:
                 c.reading, c.definitions = self.source.lookup(c.text)
-            if c.reading:
+            if c.reading and self.space_pinyin:
                 c.reading = space_pinyin(c.text, c.reading)
 
 

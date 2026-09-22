@@ -178,15 +178,16 @@ elsewhere.
 |---|---|
 | `stack_dict_definitions` | look a word up in every dictionary instead of stopping at the first match. |
 | `dict_defs_on_new_line` | puts each definition on its own line |
+| `space_pinyin` | add spaces between pinyin syllables |
 | `example_sentence_min_hanzi` / `example_sentence_max_hanzi` | example sentence length range |
 
 ### Debug
 
 | Flag | What it does |
 |---|---|
-| `show_words_with_no_defs` | keep cards with no definition found  |
+| `keep_words_with_no_defs` | keep cards with no definition found |
 | `segment_batch_size` | sentences per HanLP call |
-| `clean_text` | strip downloader noise (default `true`) |
+| `clean_text` | strip downloader noise |
 | `keep_unranked_words` | keep words missing from every frequency dictionary |
 | `ankiconnect_url` | default `http://127.0.0.1:8765` |
 
