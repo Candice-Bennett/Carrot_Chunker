@@ -15,6 +15,10 @@ def warn(message: str) -> None:
     print(f"{BOLD_RED}{message}{RESET}")
 
 
+def log_filter(name: str, detail: str, before: int, after: int) -> None:
+    print(f"{name} filter: {detail}, removed {before - after}, {after} candidates remain")
+
+
 def fatal(message: str, code: int = 1) -> None:
     warn(message)
     try:

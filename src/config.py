@@ -23,6 +23,8 @@ class Config:
     use_chapters: bool = False
     start_percent: float = 0.0
     end_percent: float = 1.0
+    card_min_hanzi_length: int = 1
+    card_max_hanzi_length: int = 100
     dedupe_enabled: bool = True
     dedupe_fields: list[DedupeField] = field(default_factory=list)
 

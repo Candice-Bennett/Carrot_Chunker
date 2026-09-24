@@ -154,6 +154,7 @@ you still need to import it:
 | `set_lowest_freq` | with multiple frequency dictionaries, use the lowest (most common) rank found across all of them instead of the first one checked |
 | `use_chapters` | pick specific chapters instead, prompts you at run time |
 | `start_percent` / `end_percent` | only use this % range of the text (by character count) |
+| `card_min_hanzi_length` / `card_max_hanzi_length` | only keep words with this many hanzi |
 | `dedupe_enabled` / `dedupe_fields` | `{note_type, field_name}` pairs to check via AnkiConnect |
 
 ### Paths

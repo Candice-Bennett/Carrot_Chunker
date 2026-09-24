@@ -9,9 +9,9 @@ from anki_service import CsvBuilder, DedupeChecker
 from ankiconnect_client import AnkiConnectClient
 from archives import find_zips
 from config import Config
-from console import fatal, warn
+from console import fatal, log_filter, warn
 from dictionary import DictionaryService, derive_chengyu, load_dicts
-from frequency import FrequencyService, load_freq_dicts, rank_by_count
+from frequency import FrequencyService, filter_length, load_freq_dicts, rank_by_count
 from ingest import load_text
 from rabbit_hole import is_rabbit_hole_export, parse_rabbit_hole_export
 from sectioning import pick_chapters, slice_percent
@@ -33,7 +33,14 @@ def check_user_zips(folder: str, label: str) -> None:
 def build_freq_service(cfg: Config) -> FrequencyService:
     check_user_zips(cfg.frequency_dictionaries_dir, "Frequency dictionaries")
     freq_dict = load_freq_dicts(cfg.frequency_dictionaries_dir)
-    return FrequencyService(freq_dict, cfg.top_cutoff_rank, cfg.keep_unranked_words, cfg.set_lowest_freq)
+    return FrequencyService(
+        freq_dict,
+        cfg.top_cutoff_rank,
+        cfg.keep_unranked_words,
+        cfg.set_lowest_freq,
+        cfg.card_min_hanzi_length,
+        cfg.card_max_hanzi_length,
+    )
 
 
 def build_dict_service(cfg: Config) -> DictionaryService:
@@ -84,8 +91,8 @@ def main(input_name: str | None = None) -> None:
             freq_service = build_freq_service(cfg)
             candidates = freq_service.filter_and_annotate(candidates, cfg.min_count, cfg.percentile_cutoff)
             has_dict_rank = freq_service.freq_dict is not None
-            print(f"Frequency cutoffs: {len(candidates)} candidates remain")
         else:
+            candidates = filter_length(candidates, cfg.card_min_hanzi_length, cfg.card_max_hanzi_length)
             candidates = rank_by_count(candidates)
     else:
         if cfg.clean_text:
@@ -112,7 +119,6 @@ def main(input_name: str | None = None) -> None:
         freq_service = build_freq_service(cfg)
         candidates = freq_service.filter_and_annotate(candidates, cfg.min_count, cfg.percentile_cutoff)
         has_dict_rank = freq_service.freq_dict is not None
-        print(f"Frequency cutoffs: {len(candidates)} candidates remain")
 
     if is_rabbit_hole:
         print("Dedupe: skipped (rabbit-hole export is already deduped against Anki)")
@@ -121,16 +127,15 @@ def main(input_name: str | None = None) -> None:
         checker = DedupeChecker(client, cfg.dedupe_fields)
         before = len(candidates)
         candidates = [c for c in candidates if not checker.is_known(c.text)]
-        print(f"Dedupe: removed {before - len(candidates)}, {len(candidates)} candidates remain")
+        log_filter("Dedupe", "already in Anki", before, len(candidates))
 
     dict_service.annotate(candidates)
 
     if not cfg.keep_words_with_no_defs:
         before = len(candidates)
         candidates = [c for c in candidates if c.definitions]
-        dropped = before - len(candidates)
-        print(f"Dictionary filter: dropped {dropped} with no definition, {len(candidates)} candidates remain")
-        if dropped:
+        log_filter("Dictionary", "no definition found", before, len(candidates))
+        if before != len(candidates):
             print("(set keep_words_with_no_defs=true in config.json to keep these instead)")
 
     backend = CsvBuilder(
