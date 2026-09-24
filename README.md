@@ -17,6 +17,8 @@ Cards will include:
 - Dict Rank (Frequency from frequency dictionary),
 - Example Sentence (First occurance of words in text with word bolded)
 
+### Spoiler warning: example sentences are taken straight from the text, so cards can spoil parts of the story you haven't read yet. To limit this, use `use_chapters` or `start_percent` / `end_percent` to only chunk early parts or parts you have have already read. Carrot Chunker takes the first instance of a word it can but it may still result in spoilers
+
 
 ## Prerequisites
 
@@ -81,6 +83,11 @@ Set your frequency cut offs in [config.json](config.json). Here's what they do:
   i.e if `start_percent = 0.1` and `end_percent = 0.4` only the text from 10% in to 40% in
   is used. Good if you want to learn the beginning of the book first (this will also avoid later words being used and thus less spoilers). Ignored if `use_chapters` is on.
 
+- `card_min_hanzi_length` / `card_max_hanzi_length` = only keep words with this many hanzi
+
+  i.e if both are set to 4, only 4 hanzi words are kept, i.e: chengyu
+  (along with any other 4 hanzi words).
+
 - `dedupe_enabled` = removes all words already present in your Anki collection (requires the
   AnkiConnect addon, since that's how the chunker talks to Anki)
 
@@ -121,7 +128,8 @@ If you point Carrot Chunker at a file exported by
   skipped - the file is already a deduplicated list of words, counts, and
   example sentences.
 - You're still asked whether to apply frequency filters (`min_count`,
-  `percentile_cutoff`, `top_cutoff_rank`, `set_lowest_freq`).
+  `percentile_cutoff`, `top_cutoff_rank`, `set_lowest_freq`). The length filter
+  (`card_min_hanzi_length` / `card_max_hanzi_length`) is applied either way.
 - Dedupe against Anki is skipped, since Rabbit-Hole already excluded words
   you know.
 - From there it's the same as normal: dictionary lookup, then the CSV is
