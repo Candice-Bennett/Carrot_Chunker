@@ -73,10 +73,9 @@ Set your frequency cut offs in [config.json](config.json). Here's what they do:
 
 - `use_chapters` = pick specific chapters instead of a percent range
 
-  Looks for `第...章`/`节`/`回` headings, tells you how many chapters it found, then asks
-  which ones you want. You can answer with a single chapter (`5`), a range (`10-100`), a
-  list (`4,5,6,9,10`), or mix them (`1-3,5,9-10`). If no headings are found it falls back
-  to using the whole text.
+  Splits the text into chapters, tells you how many it found, then asks which ones you
+  want. You can answer with a single chapter (`5`), a range (`10-100`), a list
+  (`4,5,6,9,10`), or mix them (`1-3,5,9-10`).
 
 - `start_percent` / `end_percent` = only use the middle chunk of the text, by character count
 
